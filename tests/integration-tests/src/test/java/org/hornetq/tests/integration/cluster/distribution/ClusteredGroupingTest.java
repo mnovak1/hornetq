@@ -12,24 +12,11 @@
  */
 package org.hornetq.tests.integration.cluster.distribution;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.hornetq.api.core.HornetQException;
+import org.hornetq.api.core.HornetQInterruptedException;
 import org.hornetq.api.core.Message;
 import org.hornetq.api.core.SimpleString;
-import org.hornetq.api.core.client.ClientConsumer;
-import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientProducer;
-import org.hornetq.api.core.client.ClientSession;
-import org.hornetq.api.core.client.ClientSessionFactory;
-import org.hornetq.api.core.client.ServerLocator;
+import org.hornetq.api.core.client.*;
 import org.hornetq.api.core.management.CoreNotificationType;
 import org.hornetq.api.core.management.ManagementHelper;
 import org.hornetq.core.postoffice.impl.BindingsImpl;
@@ -48,6 +35,15 @@ import org.hornetq.tests.integration.IntegrationTestLogger;
 import org.hornetq.tests.util.ServerLocatorSettingsCallback;
 import org.junit.After;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author <a href="mailto:andy.taylor@jboss.org">Andy Taylor</a>
@@ -659,6 +655,12 @@ public class ClusteredGroupingTest extends ClusterTestBase
                      IntegrationTestLogger.LOGGER.info("Sent message to server " + targetServer + " with dupID: " + dupID + ". Total sent: " + totalMessageProduced.incrementAndGet());
                      messageCount++;
                   }
+                  catch (HornetQInterruptedException e)
+                  {
+                     IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " + targetServer + ": " + e.getMessage());
+                     e.printStackTrace();
+                     return;
+                  }
                   catch (HornetQException e)
                   {
                      IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " + targetServer + ": " + e.getMessage());
@@ -748,6 +750,12 @@ public class ClusteredGroupingTest extends ClusterTestBase
                      }
                      m.acknowledge();
                      IntegrationTestLogger.LOGGER.info("Consumed message " + m.getStringProperty(Message.HDR_DUPLICATE_DETECTION_ID) + " from server " + targetServer + ". Total consumed: " + totalMessagesConsumed.incrementAndGet());
+                  }
+                  catch (HornetQInterruptedException e)
+                  {
+                     IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " + targetServer + ".: " + e.getMessage());
+                     e.printStackTrace();
+                     return;
                   }
                   catch (HornetQException e)
                   {
