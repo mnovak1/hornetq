@@ -16,7 +16,12 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.HornetQInterruptedException;
 import org.hornetq.api.core.Message;
 import org.hornetq.api.core.SimpleString;
-import org.hornetq.api.core.client.*;
+import org.hornetq.api.core.client.ClientConsumer;
+import org.hornetq.api.core.client.ClientMessage;
+import org.hornetq.api.core.client.ClientProducer;
+import org.hornetq.api.core.client.ClientSession;
+import org.hornetq.api.core.client.ClientSessionFactory;
+import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.api.core.management.CoreNotificationType;
 import org.hornetq.api.core.management.ManagementHelper;
 import org.hornetq.core.postoffice.impl.BindingsImpl;
@@ -97,7 +102,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
          @Override
          public void onNotification(Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (notification.getType() == CoreNotificationType.UNPROPOSAL)
             {
                latch.countDown();
@@ -109,7 +115,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
          @Override
          public void onNotification(Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (notification.getType() == CoreNotificationType.UNPROPOSAL)
             {
                latch.countDown();
@@ -124,7 +131,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       verifyReceiveAll(10, 0);
 
-      QueueImpl queue0Server2 = (QueueImpl) servers[2].locateQueue(SimpleString.toSimpleString("queue0"));
+      QueueImpl queue0Server2 = (QueueImpl)servers[2].locateQueue(SimpleString.toSimpleString("queue0"));
 
       assertEquals(2, queue0Server2.getGroupsUsed().size());
 
@@ -136,9 +143,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
          Thread.sleep(10);
       }
 
-
       assertEquals("Unproposal should cleanup the queue group as well", 0, queue0Server2.getGroupsUsed().size());
-
 
       removeConsumer(0);
 
@@ -206,7 +211,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
          @Override
          public void onNotification(Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (notification.getType() == CoreNotificationType.UNPROPOSAL)
             {
                latch.countDown();
@@ -218,7 +224,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
          @Override
          public void onNotification(Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (notification.getType() == CoreNotificationType.UNPROPOSAL)
             {
                latch.countDown();
@@ -298,10 +305,10 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       verifyReceiveAll(10, 0);
 
-
    }
 
-   // Fail a node where there's a consumer only.. with messages being sent by a node that is not the local
+   // Fail a node where there's a consumer only.. with messages being sent by a node that is not the
+   // local
    @Test
    public void testGroupingSimpleFail2nd() throws Exception
    {
@@ -364,13 +371,11 @@ public class ClusteredGroupingTest extends ClusterTestBase
       msg.acknowledge();
       assertNull(consumers[2].getConsumer().receiveImmediate());
 
-
       // it should be bound to server1 as we used the group from server1
       sendWithProperty(2, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, groupIDOnConsumer1);
       msg = consumers[1].getConsumer().receive(1000);
       assertNotNull(msg);
       msg.acknowledge();
-
 
       closeAllConsumers();
       closeAllSessionFactories();
@@ -378,22 +383,22 @@ public class ClusteredGroupingTest extends ClusterTestBase
       SimpleString node1ID = servers[1].getNodeID();
 
       // Validating if it's the right server
-      Response response = servers[0].getGroupingHandler().getProposal(groupIDOnConsumer1.concat(".").concat("queue0"), false);
+      Response response =
+               servers[0].getGroupingHandler().getProposal(groupIDOnConsumer1.concat(".").concat("queue0"), false);
       assertTrue(response.getClusterName().toString().equals("queue0" + node1ID));
 
       stopServers(0, 1, 2);
 
       long time = System.currentTimeMillis();
       startServers(2, 0);
-      assertTrue("The group start should have waited the timeout on groups", System.currentTimeMillis() >= time + TIMEOUT_GROUPS);
-
+      assertTrue("The group start should have waited the timeout on groups", System.currentTimeMillis() >= time +
+               TIMEOUT_GROUPS);
 
       setupSessionFactory(0, isNetty());
       setupSessionFactory(2, isNetty());
 
       addConsumer(0, 0, "queue0", null);
       addConsumer(2, 2, "queue0", null);
-
 
       waitForBindings(0, "queues.testaddress", 1, 1, false);
 
@@ -410,11 +415,12 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       response = servers[0].getGroupingHandler().getProposal(groupIDOnConsumer1.concat(".").concat("queue0"), false);
 
-      assertFalse("group should have been reassigned since server is not up yet", response.getClusterName().toString().equals("queue0" + node1ID));
+      assertFalse("group should have been reassigned since server is not up yet", response.getClusterName()
+                                                                                          .toString()
+                                                                                          .equals("queue0" + node1ID));
 
       assertNotNull(msg);
       msg.acknowledge();
-
 
    }
 
@@ -461,34 +467,34 @@ public class ClusteredGroupingTest extends ClusterTestBase
       sendWithProperty(0, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id2"));
       sendWithProperty(0, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id3"));
 
-
       assertNotNull(servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
 
       // Group timeout
       Thread.sleep(1000);
 
       long timeLimit = System.currentTimeMillis() + 5000;
-      while (timeLimit > System.currentTimeMillis() && servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false) != null)
+      while (timeLimit > System.currentTimeMillis() &&
+               servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false) != null)
       {
          Thread.sleep(10);
       }
       Thread.sleep(1000);
 
-      assertNull("Group should have timed out", servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
+      assertNull("Group should have timed out",
+                 servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
 
       sendWithProperty(0, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id1"));
       sendWithProperty(1, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id1"));
-
 
       // Verify why this is failing... whyt it's creating a new one here????
       assertNotNull(servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
       assertNotNull(servers[1].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
 
-
       timeLimit = System.currentTimeMillis() + 1500;
 
       // We will keep bothering server1 as it will ping server0 eventually
-      while (timeLimit > System.currentTimeMillis() && servers[1].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), true) != null)
+      while (timeLimit > System.currentTimeMillis() &&
+               servers[1].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), true) != null)
       {
          assertNotNull(servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
          Thread.sleep(10);
@@ -498,12 +504,14 @@ public class ClusteredGroupingTest extends ClusterTestBase
       Thread.sleep(1000);
 
       timeLimit = System.currentTimeMillis() + 5000;
-      while (timeLimit > System.currentTimeMillis() && servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false) != null)
+      while (timeLimit > System.currentTimeMillis() &&
+               servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false) != null)
       {
          Thread.sleep(10);
       }
 
-      assertNull("Group should have timed out", servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
+      assertNull("Group should have timed out",
+                 servers[0].getGroupingHandler().getProposal(SimpleString.toSimpleString("id1.queue0"), false));
    }
 
    @Test
@@ -534,7 +542,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       setupSessionFactory(0, isNetty());
 
-      // need to set up reconnect attempts on this session factory because the test will restart node 1
+      // need to set up reconnect attempts on this session factory because the test will restart
+      // node 1
       setupSessionFactory(1, isNetty(), new ServerLocatorSettingsCallback()
       {
          @Override
@@ -586,7 +595,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       session.commit();
       totalMessageProduced.addAndGet(500);
-      IntegrationTestLogger.LOGGER.info("Sent block of 500 messages to server 1. Total sent: " + totalMessageProduced.get());
+      IntegrationTestLogger.LOGGER.info("Sent block of 500 messages to server 1. Total sent: " +
+               totalMessageProduced.get());
       session.close();
 
       // need thread pool to service both consumers and producers plus a thread to cycle nodes
@@ -652,22 +662,26 @@ public class ClusteredGroupingTest extends ClusterTestBase
                   try
                   {
                      producer.send(message);
-                     IntegrationTestLogger.LOGGER.info("Sent message to server " + targetServer + " with dupID: " + dupID + ". Total sent: " + totalMessageProduced.incrementAndGet());
+                     IntegrationTestLogger.LOGGER.info("Sent message to server " + targetServer + " with dupID: " +
+                              dupID + ". Total sent: " + totalMessageProduced.incrementAndGet());
                      messageCount++;
                   }
                   catch (HornetQInterruptedException e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " + targetServer + ": " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " +
+                              targetServer + ": " + e.getMessage());
                      e.printStackTrace();
                      return;
                   }
                   catch (HornetQException e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " + targetServer + ": " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " +
+                              targetServer + ": " + e.getMessage());
                   }
                   catch (Exception e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Producer thread threw unexpected exception while sending messages to " + targetServer + ": " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Producer thread threw unexpected exception while sending messages to " +
+                              targetServer + ": " + e.getMessage());
                      break;
                   }
                }
@@ -749,21 +763,26 @@ public class ClusteredGroupingTest extends ClusterTestBase
                         return;
                      }
                      m.acknowledge();
-                     IntegrationTestLogger.LOGGER.info("Consumed message " + m.getStringProperty(Message.HDR_DUPLICATE_DETECTION_ID) + " from server " + targetServer + ". Total consumed: " + totalMessagesConsumed.incrementAndGet());
+                     IntegrationTestLogger.LOGGER.info("Consumed message " +
+                              m.getStringProperty(Message.HDR_DUPLICATE_DETECTION_ID) + " from server " + targetServer +
+                              ". Total consumed: " + totalMessagesConsumed.incrementAndGet());
                   }
                   catch (HornetQInterruptedException e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " + targetServer + ".: " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " +
+                              targetServer + ".: " + e.getMessage());
                      e.printStackTrace();
                      return;
                   }
                   catch (HornetQException e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " + targetServer + ".: " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " +
+                              targetServer + ".: " + e.getMessage());
                   }
                   catch (Exception e)
                   {
-                     IntegrationTestLogger.LOGGER.info("Consumer thread threw unexpected exception while receiving messages from server " + targetServer + ".: " + e.getMessage());
+                     IntegrationTestLogger.LOGGER.info("Consumer thread threw unexpected exception while receiving messages from server " +
+                              targetServer + ".: " + e.getMessage());
                      return;
                   }
                }
@@ -869,7 +888,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       long time = System.currentTimeMillis();
       startServers(1, 2, 0);
-      assertTrue("Server restart took a long wait even though it wasn't required as the server already had all the bindings", System.currentTimeMillis() - time < TIMEOUT);
+      assertTrue("Server restart took a long wait even though it wasn't required as the server already had all the bindings",
+                 System.currentTimeMillis() - time < TIMEOUT);
 
       setupSessionFactory(0, isNetty());
       setupSessionFactory(1, isNetty());
@@ -893,7 +913,6 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       verifyReceiveAll(1, 0, 1, 2);
    }
-
 
    @Test
    public void testGroupingBindingsRemoved() throws Exception
@@ -964,11 +983,11 @@ public class ClusteredGroupingTest extends ClusterTestBase
       sendWithProperty(0, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id2"));
       sendWithProperty(0, "queues.testaddress", 1, false, Message.HDR_GROUP_ID, new SimpleString("id3"));
 
-      //check for 2 messages on 0
+      // check for 2 messages on 0
       verifyReceiveAll(1, 0);
       verifyReceiveAll(1, 0);
 
-      //get the pinned message from 2
+      // get the pinned message from 2
       addConsumer(1, 2, "queue0", null);
 
       verifyReceiveAll(1, 1);
@@ -995,7 +1014,6 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       setUpGroupHandler(new GroupingHandler()
       {
-
 
          @Override
          public void awaitBindings() throws Exception
@@ -1035,19 +1053,19 @@ public class ClusteredGroupingTest extends ClusterTestBase
          @Override
          public void remove(SimpleString id, SimpleString groupId, int distance)
          {
-            //To change body of implemented methods use File | Settings | File Templates.
+            // To change body of implemented methods use File | Settings | File Templates.
          }
 
          @Override
          public void start() throws Exception
          {
-            //To change body of implemented methods use File | Settings | File Templates.
+            // To change body of implemented methods use File | Settings | File Templates.
          }
 
          @Override
          public void stop() throws Exception
          {
-            //To change body of implemented methods use File | Settings | File Templates.
+            // To change body of implemented methods use File | Settings | File Templates.
          }
 
          @Override
@@ -1125,11 +1143,11 @@ public class ClusteredGroupingTest extends ClusterTestBase
       }
       catch (Exception e)
       {
-         e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+         e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                              // Templates.
       }
 
    }
-
 
    @Test
    public void testGroupingSendTo2queues() throws Exception
@@ -1490,13 +1508,14 @@ public class ClusteredGroupingTest extends ClusterTestBase
       {
          public void onNotification(final Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (CoreNotificationType.BINDING_REMOVED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1504,9 +1523,9 @@ public class ClusteredGroupingTest extends ClusterTestBase
             else if (CoreNotificationType.BINDING_ADDED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1519,8 +1538,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
       stopServers(1);
 
       startServers(1);
-      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5,
-                                                                                                   TimeUnit.SECONDS));
+      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5, TimeUnit.SECONDS));
       getServer(0).getManagementService().removeNotificationListener(listener);
       getServer(2).getManagementService().removeNotificationListener(listener);
       addConsumer(1, 2, "queue0", null);
@@ -1584,13 +1602,14 @@ public class ClusteredGroupingTest extends ClusterTestBase
       {
          public void onNotification(final Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (CoreNotificationType.BINDING_REMOVED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1598,9 +1617,9 @@ public class ClusteredGroupingTest extends ClusterTestBase
             else if (CoreNotificationType.BINDING_ADDED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1618,8 +1637,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       setupSessionFactory(1, isNetty());
 
-      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5,
-                                                                                                   TimeUnit.SECONDS));
+      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5, TimeUnit.SECONDS));
       getServer(0).getManagementService().removeNotificationListener(listener);
       getServer(2).getManagementService().removeNotificationListener(listener);
       addConsumer(1, 1, "queue0", null);
@@ -1677,13 +1695,14 @@ public class ClusteredGroupingTest extends ClusterTestBase
       {
          public void onNotification(final Notification notification)
          {
-            if (!(notification.getType() instanceof CoreNotificationType)) return;
+            if (!(notification.getType() instanceof CoreNotificationType))
+               return;
             if (CoreNotificationType.BINDING_REMOVED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1691,9 +1710,9 @@ public class ClusteredGroupingTest extends ClusterTestBase
             else if (CoreNotificationType.BINDING_ADDED == notification.getType())
             {
                if (notification.getProperties()
-                  .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
-                  .toString()
-                  .equals("queues.testaddress"))
+                               .getSimpleStringProperty(ManagementHelper.HDR_ADDRESS)
+                               .toString()
+                               .equals("queues.testaddress"))
                {
                   latch.countDown();
                }
@@ -1706,8 +1725,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       closeSessionFactory(1);
       startServers(1);
-      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5,
-                                                                                                   TimeUnit.SECONDS));
+      assertTrue("timed out waiting for bindings to be removed and added back", latch.await(5, TimeUnit.SECONDS));
       setupSessionFactory(1, isNetty());
       getServer(0).getManagementService().removeNotificationListener(listener);
       getServer(2).getManagementService().removeNotificationListener(listener);
@@ -1857,12 +1875,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
       private final int node;
 
-      public ThreadSender(final int msgStart,
-                          final int msgEnd,
-                          final int node,
-                          final SimpleString id,
-                          final CountDownLatch latch,
-                          final boolean wait)
+      public ThreadSender(final int msgStart, final int msgEnd, final int node, final SimpleString id,
+                          final CountDownLatch latch, final boolean wait)
       {
          this.msgStart = msgStart;
          this.msgEnd = msgEnd;
@@ -1882,7 +1896,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
             }
             catch (InterruptedException e)
             {
-               e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+               e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                                    // Templates.
             }
          }
          else
@@ -1895,7 +1910,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
          }
          catch (Exception e)
          {
-            e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                                 // Templates.
          }
       }
    }
