@@ -37,8 +37,11 @@ import org.hornetq.core.server.management.NotificationListener;
 import org.hornetq.core.settings.impl.AddressFullMessagePolicy;
 import org.hornetq.core.settings.impl.AddressSettings;
 import org.hornetq.tests.integration.IntegrationTestLogger;
+import org.hornetq.tests.integration.cluster.util.SameProcessHornetQServer;
 import org.hornetq.tests.util.ServerLocatorSettingsCallback;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -515,6 +518,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
    }
 
    @Test
+   @Ignore
    public void testGroupingWith3Nodes() throws Exception
    {
       final String ADDRESS = "queues.testaddress";
@@ -653,7 +657,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
 
                int messageCount = 0;
 
-               while (messageCount < 100)
+               while (messageCount < 1000)
                {
                   ClientMessage message = session.createMessage(true);
                   message.putStringProperty(Message.HDR_GROUP_ID, new SimpleString(group));
@@ -669,19 +673,19 @@ public class ClusteredGroupingTest extends ClusterTestBase
                   catch (HornetQInterruptedException e)
                   {
                      IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " +
-                              targetServer + ": " + e.getMessage());
+                              targetServer + ":", e);
                      e.printStackTrace();
                      return;
                   }
                   catch (HornetQException e)
                   {
                      IntegrationTestLogger.LOGGER.info("Producer thread threw exception while sending messages to " +
-                              targetServer + ": " + e.getMessage());
+                              targetServer + ":", e);
                   }
                   catch (Exception e)
                   {
                      IntegrationTestLogger.LOGGER.info("Producer thread threw unexpected exception while sending messages to " +
-                              targetServer + ": " + e.getMessage());
+                                                                targetServer + ": ", e);
                      break;
                   }
                }
@@ -778,6 +782,8 @@ public class ClusteredGroupingTest extends ClusterTestBase
                   {
                      IntegrationTestLogger.LOGGER.info("Consumer thread threw exception while receiving messages from server " +
                               targetServer + ".: " + e.getMessage());
+                     e.printStackTrace();
+
                   }
                   catch (Exception e)
                   {
@@ -805,7 +811,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
             {
                // ignore
             }
-            cycleServer(1);
+            cycleServer(1, sf1.getServerLocator());
          }
       };
 
@@ -820,11 +826,13 @@ public class ClusteredGroupingTest extends ClusterTestBase
       assertEquals(totalMessageProduced.longValue(), totalMessagesConsumed.longValue());
    }
 
-   private void cycleServer(int node)
+   private void cycleServer(int node, ServerLocator locator)
    {
       try
       {
-         stopServers(node);
+         SameProcessHornetQServer server = new SameProcessHornetQServer(getServer(node));
+         CountDownLatch latch = server.crash(locator.createSessionFactory().createSession());
+         Assert.assertTrue(latch.await(10, TimeUnit.SECONDS));
          startServers(node);
       }
       catch (Exception e)
