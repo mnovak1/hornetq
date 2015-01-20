@@ -47,6 +47,7 @@ import org.hornetq.core.settings.impl.AddressSettings;
 import org.hornetq.tests.integration.IntegrationTestLogger;
 import org.hornetq.tests.util.ServerLocatorSettingsCallback;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -511,6 +512,7 @@ public class ClusteredGroupingTest extends ClusterTestBase
    }
 
    @Test
+   @Ignore
    public void testGroupingWith3Nodes() throws Exception
    {
       final String ADDRESS = "queues.testaddress";
