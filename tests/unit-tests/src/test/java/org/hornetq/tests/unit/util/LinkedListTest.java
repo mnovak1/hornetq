@@ -176,6 +176,9 @@ public class LinkedListTest extends UnitTestCase
 
       assertCount(999, count);
 
+      // on IBM JDK garbage collector is too agressive and calls finilize() before we start to check it
+      // thus this call which prevents GC to do that
+      objs.size();
    }
 
    /**
