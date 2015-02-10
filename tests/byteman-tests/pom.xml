@@ -179,6 +179,19 @@
                </execution>
             </executions>
          </plugin>
+         <!-- Initializes absolute paths in properties - like ${org.jboss.byteman:byteman:jar} -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.8</version>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>properties</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -207,6 +220,11 @@
                   </property>
                   -->
                </systemProperties>
+               <!-- we have inhibit initial loading of byteman agent - see https://issues.jboss.org/browse/AS7-5914
+               for more details -->
+               <systemPropertyVariables>
+                  <org.jboss.byteman.contrib.bmunit.agent.inhibit>true</org.jboss.byteman.contrib.bmunit.agent.inhibit>
+               </systemPropertyVariables>
                <!-- make sure maven puts the byteman jar in the classpath rather than in a manifest jar -->
                <useManifestOnlyJar>false</useManifestOnlyJar>
                <forkMode>once</forkMode>
@@ -215,7 +233,7 @@
                -->
                <parallel>false</parallel>
                <!--<argLine>${hornetq-surefire-argline} -Dorg.jboss.byteman.verbose -Dorg.jboss.byteman.contrib.bmunit.verbose</argLine>-->
-               <argLine>${hornetq-surefire-argline}</argLine>
+               <argLine>${hornetq-surefire-argline} -javaagent:${org.jboss.byteman:byteman:jar}=port:9091,boot:${org.jboss.byteman:byteman:jar}</argLine>
             </configuration>
          </plugin>
       </plugins>
