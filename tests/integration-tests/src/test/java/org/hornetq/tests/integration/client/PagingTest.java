@@ -13,36 +13,8 @@
 
 package org.hornetq.tests.integration.client;
 
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.hornetq.api.core.HornetQBuffer;
-import org.hornetq.api.core.HornetQException;
-import org.hornetq.api.core.HornetQExceptionType;
-import org.hornetq.api.core.Message;
-import org.hornetq.api.core.Pair;
-import org.hornetq.api.core.SimpleString;
-import org.hornetq.api.core.client.ClientConsumer;
-import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientProducer;
-import org.hornetq.api.core.client.ClientSession;
-import org.hornetq.api.core.client.ClientSessionFactory;
-import org.hornetq.api.core.client.MessageHandler;
-import org.hornetq.api.core.client.ServerLocator;
+import org.hornetq.api.core.*;
+import org.hornetq.api.core.client.*;
 import org.hornetq.core.client.impl.ClientConsumerInternal;
 import org.hornetq.core.config.Configuration;
 import org.hornetq.core.config.DivertConfiguration;
@@ -74,7 +46,20 @@ import org.hornetq.tests.util.ServiceTestBase;
 import org.hornetq.tests.util.UnitTestCase;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A PagingTest
@@ -5617,6 +5602,7 @@ public class PagingTest extends ServiceTestBase
 
 
    @Test
+   @Ignore //unstable
    public void testSpreadMessagesWithFilterWithDeadConsumer() throws Exception
    {
       testSpreadMessagesWithFilter(true);

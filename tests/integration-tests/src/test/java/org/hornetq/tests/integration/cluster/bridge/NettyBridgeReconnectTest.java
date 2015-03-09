@@ -13,6 +13,9 @@
 
 package org.hornetq.tests.integration.cluster.bridge;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
  * A NettyBridgeReconnectTest
  *
@@ -25,5 +28,13 @@ public class NettyBridgeReconnectTest extends BridgeReconnectTest
    protected boolean isNetty()
    {
       return true;
+   }
+
+   @Override
+   @Ignore
+   @Test
+   public void testShutdownServerCleanlyAndReconnectSameNodeWithSleep() throws Exception
+   {
+      //unstable
    }
 }

@@ -13,29 +13,9 @@
 
 package org.hornetq.tests.integration.jms.server.management;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.management.Notification;
-import javax.naming.Context;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.TransportConfiguration;
-import org.hornetq.api.core.client.ClientConsumer;
-import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientProducer;
-import org.hornetq.api.core.client.ClientSession;
-import org.hornetq.api.core.client.ClientSessionFactory;
-import org.hornetq.api.core.client.ServerLocator;
+import org.hornetq.api.core.client.*;
 import org.hornetq.api.core.management.ObjectNameBuilder;
 import org.hornetq.api.jms.HornetQJMSClient;
 import org.hornetq.api.jms.JMSFactoryType;
@@ -58,10 +38,12 @@ import org.hornetq.tests.unit.util.InVMContext;
 import org.hornetq.tests.util.RandomUtil;
 import org.hornetq.utils.UUIDGenerator;
 import org.hornetq.utils.json.JSONArray;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
+import javax.jms.*;
+import javax.management.Notification;
+import javax.naming.Context;
+import java.util.*;
 
 /**
  * A QueueControlTest
@@ -1117,6 +1099,7 @@ public class JMSQueueControlTest extends ManagementTestBase
    }
 
    @Test
+   @Ignore
    public void testDeleteWithPaging() throws Exception
    {
       AddressSettings pagedSetting = new AddressSettings();
@@ -1166,6 +1149,7 @@ public class JMSQueueControlTest extends ManagementTestBase
 
 
    @Test
+
    public void testDeleteWithPagingAndFilter() throws Exception
    {
       AddressSettings pagedSetting = new AddressSettings();

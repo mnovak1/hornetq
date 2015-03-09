@@ -1,15 +1,16 @@
 package org.hornetq.tests.integration.cluster.failover;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.hornetq.core.config.Configuration;
 import org.hornetq.core.server.HornetQServer;
 import org.hornetq.core.server.NodeManager;
 import org.hornetq.core.settings.impl.AddressFullMessagePolicy;
 import org.hornetq.core.settings.impl.AddressSettings;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BackupSyncPagingTest extends BackupSyncJournalTest
 {
@@ -20,6 +21,13 @@ public class BackupSyncPagingTest extends BackupSyncJournalTest
    {
       super.setUp();
       setNumberOfMessages(100);
+   }
+
+   @Override
+   @Ignore
+   @Test
+   public void testReserveFileIdValuesOnBackup() throws Exception{
+       //unstable
    }
 
    @Override

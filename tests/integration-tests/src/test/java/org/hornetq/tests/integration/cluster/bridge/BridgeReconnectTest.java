@@ -45,10 +45,7 @@ import org.hornetq.core.server.impl.InVMNodeManager;
 import org.hornetq.core.server.management.ManagementService;
 import org.hornetq.spi.core.protocol.RemotingConnection;
 import org.hornetq.tests.integration.IntegrationTestLogger;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * A BridgeReconnectTest
@@ -437,12 +434,14 @@ public class BridgeReconnectTest extends BridgeTestBase
    // We test that we can pause more than client failure check period (to prompt the pinger to failing)
    // before reconnecting
    @Test
+
    public void testShutdownServerCleanlyAndReconnectSameNodeWithSleep() throws Exception
    {
       testShutdownServerCleanlyAndReconnectSameNode(true);
    }
 
    @Test
+   @Ignore //unstable
    public void testShutdownServerCleanlyAndReconnectSameNode() throws Exception
    {
       testShutdownServerCleanlyAndReconnectSameNode(false);
