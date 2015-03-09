@@ -26,8 +26,9 @@ public class BackupSyncPagingTest extends BackupSyncJournalTest
    @Override
    @Ignore
    @Test
-   public void testReserveFileIdValuesOnBackup() throws Exception{
-       //unstable
+   public void testReserveFileIdValuesOnBackup() throws Exception
+   {
+      // unstable
    }
 
    @Override

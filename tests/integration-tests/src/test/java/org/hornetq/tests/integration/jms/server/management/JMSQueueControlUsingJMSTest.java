@@ -12,6 +12,7 @@
  */
 
 package org.hornetq.tests.integration.jms.server.management;
+
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.api.core.management.ResourceNames;
 import org.hornetq.api.jms.HornetQJMSClient;
@@ -31,12 +32,8 @@ import javax.jms.Session;
 import java.util.Map;
 
 /**
- *
  * A JMSQueueControlUsingJMSTest
- *
  * @author <a href="mailto:tim.fox@jboss.com">Tim Fox</a>
- *
- *
  */
 public class JMSQueueControlUsingJMSTest extends JMSQueueControlTest
 {
@@ -60,7 +57,10 @@ public class JMSQueueControlUsingJMSTest extends JMSQueueControlTest
    {
       super.setUp();
 
-      HornetQConnectionFactory cf = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, new TransportConfiguration(InVMConnectorFactory.class.getName()));
+      HornetQConnectionFactory cf =
+               HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,
+                                                                 new TransportConfiguration(
+                                                                                            InVMConnectorFactory.class.getName()));
       connection = cf.createQueueConnection();
       session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
       connection.start();
@@ -82,15 +82,17 @@ public class JMSQueueControlUsingJMSTest extends JMSQueueControlTest
    @Override
    @Ignore
    @Test
-   public void testDeleteWithPaging() throws Exception{
-       //unstable
+   public void testDeleteWithPaging() throws Exception
+   {
+      // unstable
    }
 
    @Override
    @Ignore
    @Test
-   public void testDeleteWithPagingAndFilter() throws Exception{
-        //unstable
+   public void testDeleteWithPagingAndFilter() throws Exception
+   {
+      // unstable
    }
 
    @Ignore
@@ -101,15 +103,13 @@ public class JMSQueueControlUsingJMSTest extends JMSQueueControlTest
       // I'm not implementing the required proxy for this test on this JMS test
    }
 
-
    @Override
    protected JMSQueueControl createManagementControl() throws Exception
    {
-      HornetQQueue managementQueue = (HornetQQueue) HornetQJMSClient.createQueue("hornetq.management");
+      HornetQQueue managementQueue = (HornetQQueue)HornetQJMSClient.createQueue("hornetq.management");
 
-      final JMSMessagingProxy proxy = new JMSMessagingProxy(session,
-                                                            managementQueue,
-                                                            ResourceNames.JMS_QUEUE + queue.getQueueName());
+      final JMSMessagingProxy proxy =
+               new JMSMessagingProxy(session, managementQueue, ResourceNames.JMS_QUEUE + queue.getQueueName());
 
       return new JMSQueueControl()
       {

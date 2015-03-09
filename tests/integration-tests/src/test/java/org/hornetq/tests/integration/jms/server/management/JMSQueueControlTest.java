@@ -15,7 +15,12 @@ package org.hornetq.tests.integration.jms.server.management;
 
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.TransportConfiguration;
-import org.hornetq.api.core.client.*;
+import org.hornetq.api.core.client.ClientConsumer;
+import org.hornetq.api.core.client.ClientMessage;
+import org.hornetq.api.core.client.ClientProducer;
+import org.hornetq.api.core.client.ClientSession;
+import org.hornetq.api.core.client.ClientSessionFactory;
+import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.api.core.management.ObjectNameBuilder;
 import org.hornetq.api.jms.HornetQJMSClient;
 import org.hornetq.api.jms.JMSFactoryType;
@@ -38,18 +43,30 @@ import org.hornetq.tests.unit.util.InVMContext;
 import org.hornetq.tests.util.RandomUtil;
 import org.hornetq.utils.UUIDGenerator;
 import org.hornetq.utils.json.JSONArray;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 import javax.management.Notification;
 import javax.naming.Context;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A QueueControlTest
  * <p/>
  * on this testContaining WithRealData will use real data on the journals
- *
  * @author <a href="jmesnil@redhat.com">Jeff Mesnil</a>
  *         <p/>
  *         Created 14 nov. 2008 13:35:10
@@ -145,15 +162,16 @@ public class JMSQueueControlTest extends ManagementTestBase
 
       String[] ids = JMSUtil.sendMessages(queue, 20);
 
-      HornetQJMSConnectionFactory cf = (HornetQJMSConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,
-                                                                                                                      new TransportConfiguration(InVMConnectorFactory.class.getName()));
+      HornetQJMSConnectionFactory cf =
+               (HornetQJMSConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,
+                                                                                              new TransportConfiguration(
+                                                                                                                         InVMConnectorFactory.class.getName()));
 
       Connection conn = cf.createConnection();
       conn.start();
       Session session = conn.createSession(true, Session.SESSION_TRANSACTED);
 
       MessageConsumer consumer = session.createConsumer(queue);
-
 
       for (int i = 0; i < 20; i++)
       {
@@ -167,7 +185,6 @@ public class JMSQueueControlTest extends ManagementTestBase
       // Just one consumer.. so just one queue
       Assert.assertEquals(1, deliverings.size());
 
-
       for (Map.Entry<String, Map<String, Object>[]> deliveryEntry : deliverings.entrySet())
       {
          System.out.println("Key:" + deliveryEntry.getKey());
@@ -177,8 +194,6 @@ public class JMSQueueControlTest extends ManagementTestBase
             Assert.assertEquals(ids[i], deliveryEntry.getValue()[i].get("JMSMessageID").toString());
          }
       }
-
-
 
       session.rollback();
       session.close();
@@ -841,7 +856,6 @@ public class JMSQueueControlTest extends ManagementTestBase
       serverManager.destroyQueue(otherQueueName);
    }
 
-
    @Test
    public void testMoveMessagesWithDuplicateIDSet() throws Exception
    {
@@ -875,8 +889,8 @@ public class JMSQueueControlTest extends ManagementTestBase
       session.commit();
 
       JMSQueueControl queueControl = createManagementControl();
-      JMSQueueControl otherQueueControl = ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue,
-                                                                                        mbeanServer);
+      JMSQueueControl otherQueueControl =
+               ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue, mbeanServer);
 
       Assert.assertEquals(10, queueControl.getMessageCount());
 
@@ -920,7 +934,6 @@ public class JMSQueueControlTest extends ManagementTestBase
       serverManager.destroyQueue(otherQueueName);
    }
 
-
    @Test
    public void testMoveIndividualMessagesWithDuplicateIDSetUsingI() throws Exception
    {
@@ -961,8 +974,8 @@ public class JMSQueueControlTest extends ManagementTestBase
       session.commit();
 
       JMSQueueControl queueControl = createManagementControl();
-      JMSQueueControl otherQueueControl = ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue,
-                                                                                        mbeanServer);
+      JMSQueueControl otherQueueControl =
+               ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue, mbeanServer);
 
       Assert.assertEquals(10, queueControl.getMessageCount());
 
@@ -1032,8 +1045,8 @@ public class JMSQueueControlTest extends ManagementTestBase
       prod2.send(msg);
 
       JMSQueueControl queueControl = createManagementControl();
-      JMSQueueControl otherQueueControl = ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue,
-                                                                                        mbeanServer);
+      JMSQueueControl otherQueueControl =
+               ManagementControlHelper.createJMSQueueControl((HornetQQueue)otherQueue, mbeanServer);
 
       Assert.assertEquals(1, queueControl.getMessageCount());
       Assert.assertEquals(1, otherQueueControl.getMessageCount());
@@ -1112,7 +1125,6 @@ public class JMSQueueControlTest extends ManagementTestBase
 
       HornetQQueue pagedQueue = (HornetQQueue)context.lookup("/queue/pagedTest");
 
-
       ServerLocator locator = createInVMNonHALocator();
 
       ClientSessionFactory sf = createSessionFactory(locator);
@@ -1133,13 +1145,11 @@ public class JMSQueueControlTest extends ManagementTestBase
 
       assertEquals(100, control.removeMessages("     "));
 
-
       session.start();
 
       ClientConsumer consumer = session.createConsumer(pagedQueue.getAddress());
 
       assertNull(consumer.receive(300));
-
 
       session.close();
 
@@ -1147,9 +1157,7 @@ public class JMSQueueControlTest extends ManagementTestBase
       locator.close();
    }
 
-
    @Test
-
    public void testDeleteWithPagingAndFilter() throws Exception
    {
       AddressSettings pagedSetting = new AddressSettings();
@@ -1161,7 +1169,6 @@ public class JMSQueueControlTest extends ManagementTestBase
       serverManager.createQueue(true, "pagedTest", null, true, "/queue/pagedTest");
 
       HornetQQueue pagedQueue = (HornetQQueue)context.lookup("/queue/pagedTest");
-
 
       ServerLocator locator = createInVMNonHALocator();
 
@@ -1186,7 +1193,6 @@ public class JMSQueueControlTest extends ManagementTestBase
 
       ClientConsumer consumer = session.createConsumer(pagedQueue.getAddress());
 
-
       for (int i = 0; i < 100; i++)
       {
          ClientMessage msg = consumer.receive(1000);
@@ -1197,9 +1203,7 @@ public class JMSQueueControlTest extends ManagementTestBase
 
       assertNull(consumer.receive(300));
 
-
       session.close();
-
 
       sf.close();
       locator.close();
@@ -1250,7 +1254,6 @@ public class JMSQueueControlTest extends ManagementTestBase
 
    /**
     * on this testContaining WithRealData will use real data on the journals
-    *
     * @throws Exception
     */
    @Test
@@ -1302,8 +1305,8 @@ public class JMSQueueControlTest extends ManagementTestBase
       assertTrue(newBindingAdded);
    }
 
-   //make sure notifications are always received no matter whether
-   //a Queue is created via JMSServerControl or by JMSServerManager directly.
+   // make sure notifications are always received no matter whether
+   // a Queue is created via JMSServerControl or by JMSServerManager directly.
    @Test
    public void testCreateQueueNotification() throws Exception
    {
@@ -1402,8 +1405,10 @@ public class JMSQueueControlTest extends ManagementTestBase
 
    private Connection createConnection() throws JMSException
    {
-      HornetQConnectionFactory cf = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,
-                                                                                      new TransportConfiguration(InVMConnectorFactory.class.getName()));
+      HornetQConnectionFactory cf =
+               HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF,
+                                                                 new TransportConfiguration(
+                                                                                            InVMConnectorFactory.class.getName()));
 
       cf.setBlockOnDurableSend(true);
 

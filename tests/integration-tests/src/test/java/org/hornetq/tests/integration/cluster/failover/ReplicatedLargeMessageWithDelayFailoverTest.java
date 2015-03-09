@@ -1,4 +1,5 @@
 package org.hornetq.tests.integration.cluster.failover;
+
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.tests.integration.cluster.util.BackupSyncDelay;
 import org.junit.After;
@@ -26,8 +27,9 @@ public class ReplicatedLargeMessageWithDelayFailoverTest extends ReplicatedLarge
    @Override
    @Ignore
    @Test
-   public void testBackupServerNotRemoved() throws Exception{
-       //unstable
+   public void testBackupServerNotRemoved() throws Exception
+   {
+      // unstable
    }
 
    @Override

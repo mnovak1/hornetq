@@ -45,7 +45,11 @@ import org.hornetq.core.server.impl.InVMNodeManager;
 import org.hornetq.core.server.management.ManagementService;
 import org.hornetq.spi.core.protocol.RemotingConnection;
 import org.hornetq.tests.integration.IntegrationTestLogger;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * A BridgeReconnectTest
