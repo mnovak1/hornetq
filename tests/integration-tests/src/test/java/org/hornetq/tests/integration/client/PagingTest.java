@@ -1467,6 +1467,7 @@ public class PagingTest extends ServiceTestBase
     * This test will remove all the page directories during a restart, simulating a crash scenario. The server should still start after this
     */
    @Test
+   @Ignore //unstable
    public void testDeletePhisicalPages() throws Exception
    {
       clearDataRecreateServerDirs();
@@ -1685,6 +1686,7 @@ public class PagingTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore //unstable
    public void testMissingTXEverythingAcked() throws Exception
    {
       clearDataRecreateServerDirs();
@@ -5325,6 +5327,7 @@ public class PagingTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore //unstable
    /**
     * When running this test from an IDE add this to the test command line so that the AssertionLoggerHandler works properly:
     *
@@ -5510,6 +5513,7 @@ public class PagingTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore //unstable
    public void testFailMessagesDuplicates() throws Exception
    {
       clearDataRecreateServerDirs();

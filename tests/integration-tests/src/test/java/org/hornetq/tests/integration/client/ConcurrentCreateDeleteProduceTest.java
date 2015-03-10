@@ -13,9 +13,6 @@
 
 package org.hornetq.tests.integration.client;
 
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
@@ -29,7 +26,11 @@ import org.hornetq.core.server.Queue;
 import org.hornetq.core.settings.impl.AddressSettings;
 import org.hornetq.tests.util.ServiceTestBase;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The delete queue was reseting some fields on the Queue what would eventually turn a NPE.
@@ -76,6 +77,7 @@ public class ConcurrentCreateDeleteProduceTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore
    public void testConcurrentProduceCreateAndDelete() throws Throwable
    {
       ClientSessionFactory factory = locator.createSessionFactory();

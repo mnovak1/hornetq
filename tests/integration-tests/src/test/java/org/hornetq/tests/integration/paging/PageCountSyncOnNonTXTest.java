@@ -26,6 +26,7 @@ import org.hornetq.tests.util.RandomUtil;
 import org.hornetq.tests.util.ServiceTestBase;
 import org.hornetq.tests.util.SpawnedVMSupport;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -50,6 +51,7 @@ public class PageCountSyncOnNonTXTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore //unstable
    public void testSendNoTx() throws Exception
    {
       String QUEUE_NAME = "myQueue";

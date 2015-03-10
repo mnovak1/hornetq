@@ -13,9 +13,10 @@
 
 package org.hornetq.tests.integration.cluster.failover;
 
-
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.core.client.impl.ClientSessionInternal;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * A ReplicatedLargeMessageFailoverTest
@@ -62,5 +63,13 @@ public class ReplicatedLargeMessageFailoverTest extends LargeMessageFailoverTest
          waitForRemoteBackup(null, 5, true, backupServer.getServer());
       }
       super.crash(sessions);
+   }
+
+   @Override
+   @Test
+   @Ignore
+   public void testForceBlockingReturn() throws Exception
+   {
+      // unstable
    }
 }

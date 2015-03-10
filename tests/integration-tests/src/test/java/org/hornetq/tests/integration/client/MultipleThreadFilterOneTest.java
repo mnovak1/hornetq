@@ -13,11 +13,6 @@
 
 package org.hornetq.tests.integration.client;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.client.ClientConsumer;
@@ -29,6 +24,11 @@ import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.core.server.HornetQServer;
 import org.hornetq.core.settings.impl.AddressSettings;
 import org.hornetq.tests.util.ServiceTestBase;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Multiple Threads producing Messages, with Multiple Consumers with different queues, each queue with a different filter
@@ -228,6 +228,7 @@ public class MultipleThreadFilterOneTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore //unstable
    public void testSendingInVMPaging() throws Exception
    {
       testSending(false, true);

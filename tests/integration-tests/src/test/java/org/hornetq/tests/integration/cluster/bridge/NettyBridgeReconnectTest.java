@@ -18,7 +18,6 @@ import org.junit.Test;
 
 /**
  * A NettyBridgeReconnectTest
- *
  * @author <mailto:clebert.suconic@jboss.org">Clebert Suconic</a>
  */
 public class NettyBridgeReconnectTest extends BridgeReconnectTest
@@ -35,6 +34,14 @@ public class NettyBridgeReconnectTest extends BridgeReconnectTest
    @Test
    public void testShutdownServerCleanlyAndReconnectSameNodeWithSleep() throws Exception
    {
-      //unstable
+      // unstable
+   }
+
+   @Override
+   @Test
+   @Ignore
+   public void testFailoverDeploysBridge() throws Exception
+   {
+      // unstable
    }
 }

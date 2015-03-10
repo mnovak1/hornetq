@@ -13,11 +13,6 @@
 
 package org.hornetq.tests.integration.cluster.bridge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hornetq.api.config.HornetQDefaultConfiguration;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.HornetQExceptionType;
@@ -50,6 +45,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A BridgeReconnectTest
@@ -438,7 +438,7 @@ public class BridgeReconnectTest extends BridgeTestBase
    // We test that we can pause more than client failure check period (to prompt the pinger to failing)
    // before reconnecting
    @Test
-
+   @Ignore //unstable
    public void testShutdownServerCleanlyAndReconnectSameNodeWithSleep() throws Exception
    {
       testShutdownServerCleanlyAndReconnectSameNode(true);

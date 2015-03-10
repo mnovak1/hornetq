@@ -13,6 +13,7 @@
 
 package org.hornetq.tests.asyncio;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.junit.Assert;
@@ -39,6 +40,7 @@ public class LibaioDependencyCheckTest extends Assert
    // Public --------------------------------------------------------
 
    @Test
+   @Ignore
    public void testDependency() throws Exception
    {
       if (System.getProperties().get("os.name").equals("Linux"))

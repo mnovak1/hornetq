@@ -53,4 +53,13 @@ public class ReplicatedLargeMessageWithDelayFailoverTest extends ReplicatedLarge
       syncDelay.deliverUpToDateMsg();
       super.tearDown();
    }
+
+   @Override
+   @Test
+   @Ignore
+   public void testFailThenReceiveMoreMessagesAfterFailover2() throws Exception
+   {
+       // unstable
+   }
+
 }

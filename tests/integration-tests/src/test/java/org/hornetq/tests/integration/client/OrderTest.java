@@ -24,6 +24,7 @@ import org.hornetq.core.settings.impl.AddressSettings;
 import org.hornetq.tests.util.ServiceTestBase;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -211,6 +212,7 @@ public class OrderTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore
    public void testOrderOverSessionClosePersistentWithRedeliveryDelay() throws Exception
    {
       doTestOverCancelWithRedelivery(true);
