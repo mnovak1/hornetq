@@ -15,6 +15,7 @@ package org.hornetq.tests.integration.cluster.failover;
 
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.core.client.impl.ClientSessionInternal;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ReplicatedFailoverTest extends FailoverTest
@@ -22,10 +23,9 @@ public class ReplicatedFailoverTest extends FailoverTest
 
    @Test
    /*
-   * default maxSavedReplicatedJournalsSize is 2, this means the backup will fall back to replicated only twice, after this
-   * it is stopped permanently
-   *
-   * */
+    * default maxSavedReplicatedJournalsSize is 2, this means the backup will fall back to
+    * replicated only twice, after this it is stopped permanently
+    */
    public void testReplicatedFailback() throws Exception
    {
       try
@@ -76,12 +76,12 @@ public class ReplicatedFailoverTest extends FailoverTest
 
          waitForServer(liveServer.getServer());
 
-         //this will give the backup time to stop fully
+         // this will give the backup time to stop fully
          waitForServerToStop(backupServer.getServer());
 
          assertFalse(backupServer.getServer().isStarted());
 
-         //the server wouldnt have reset to backup
+         // the server wouldnt have reset to backup
          assertFalse(backupServer.getServer().getConfiguration().isBackup());
       }
       finally
@@ -89,6 +89,7 @@ public class ReplicatedFailoverTest extends FailoverTest
          sf.close();
       }
    }
+
    @Override
    protected void createConfigs() throws Exception
    {
@@ -128,4 +129,13 @@ public class ReplicatedFailoverTest extends FailoverTest
       }
       super.crash(sessions);
    }
+
+   @Override
+   @Test
+   @Ignore
+   public void testForceBlockingReturn() throws Exception
+   {
+      // unstable
+   }
+
 }

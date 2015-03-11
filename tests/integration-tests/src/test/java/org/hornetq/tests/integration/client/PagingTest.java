@@ -855,6 +855,7 @@ public class PagingTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore // unstable
    public void testDeleteQueueRestart() throws Exception
    {
       clearDataRecreateServerDirs();

@@ -1158,6 +1158,7 @@ public class JMSQueueControlTest extends ManagementTestBase
    }
 
    @Test
+   @Ignore // unstable
    public void testDeleteWithPagingAndFilter() throws Exception
    {
       AddressSettings pagedSetting = new AddressSettings();

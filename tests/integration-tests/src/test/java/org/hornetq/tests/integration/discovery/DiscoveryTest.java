@@ -13,17 +13,6 @@
 
 package org.hornetq.tests.integration.discovery;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.hornetq.api.core.BroadcastEndpoint;
 import org.hornetq.api.core.BroadcastEndpointFactory;
 import org.hornetq.api.core.JGroupsBroadcastGroupConfiguration;
@@ -42,7 +31,19 @@ import org.hornetq.tests.util.RandomUtil;
 import org.hornetq.utils.UUIDGenerator;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This will test Discovery test on JGroups and UDP.
@@ -852,6 +853,7 @@ public class DiscoveryTest extends DiscoveryBaseTest
    }
 
    @Test
+   @Ignore // unstable
    public void testConnectorsUpdatedMultipleBroadcasters() throws Exception
    {
       final InetAddress groupAddress = InetAddress.getByName(address1);

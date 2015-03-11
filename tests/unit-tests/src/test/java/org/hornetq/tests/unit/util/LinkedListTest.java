@@ -109,6 +109,7 @@ public class LinkedListTest extends UnitTestCase
    }
 
    @Test
+   @Ignore
    public void testAddHeadAndRemove()
    {
       final AtomicInteger count = new AtomicInteger(0);

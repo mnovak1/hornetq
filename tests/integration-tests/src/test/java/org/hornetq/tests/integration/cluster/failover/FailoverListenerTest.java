@@ -33,6 +33,7 @@ import org.hornetq.tests.integration.IntegrationTestLogger;
 import org.hornetq.tests.util.TransportConfigurationUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -60,6 +61,7 @@ public class FailoverListenerTest extends FailoverTestBase
     * @throws Exception
     */
    @Test
+   @Ignore // unstable
    public void testFailoverListenerCall() throws Exception
    {
       createSessionFactory(2);

@@ -77,4 +77,12 @@ public class LargeMessageFailoverTest extends FailoverTest
    {
       // unstable
    }
+
+   @Override
+   @Test
+   @Ignore
+   public void testForceBlockingReturn() throws Exception
+   {
+       // unstable
+   }
 }
