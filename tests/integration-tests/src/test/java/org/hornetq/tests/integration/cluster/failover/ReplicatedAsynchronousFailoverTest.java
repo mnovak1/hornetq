@@ -13,13 +13,11 @@
 
 package org.hornetq.tests.integration.cluster.failover;
 
-
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * A ReplicatedAsynchronousFailoverTest
- *
  * @author <mailto:clebert.suconic@jboss.org">Clebert Suconic</a>
  */
 public class ReplicatedAsynchronousFailoverTest extends AsynchronousFailoverTest
@@ -30,11 +28,10 @@ public class ReplicatedAsynchronousFailoverTest extends AsynchronousFailoverTest
       createReplicatedConfigs();
    }
 
-
-    @Test
-    @Ignore
-    public void testNonTransactional() throws Throwable
-    {
-        // unstable
-    }
+   @Test
+   @Ignore
+   public void testNonTransactional() throws Throwable
+   {
+      // unstable
+   }
 }

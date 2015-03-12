@@ -22,16 +22,12 @@
 
 package org.hornetq.tests.integration.cluster.distribution;
 
-
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * A NettySymmetricClusterWithBackupTest
- *
  * @author <a href="mailto:tim.fox@jboss.com">Tim Fox</a>
- *
- *
  */
 public class NettySymmetricClusterWithBackupTest extends SymmetricClusterWithBackupTest
 {
@@ -42,12 +38,12 @@ public class NettySymmetricClusterWithBackupTest extends SymmetricClusterWithBac
       return true;
    }
 
-    @Override
-    @Test
-    @Ignore
-    public void testMixtureLoadBalancedAndNonLoadBalancedQueuesAddQueuesAndConsumersBeforeAllServersAreStarted() throws Exception
-    {
-        // unstable
-    }
+   @Override
+   @Test
+   @Ignore
+   public void testMixtureLoadBalancedAndNonLoadBalancedQueuesAddQueuesAndConsumersBeforeAllServersAreStarted() throws Exception
+   {
+      // unstable
+   }
 
 }
