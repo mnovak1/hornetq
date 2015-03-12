@@ -216,6 +216,7 @@ public class MultipleThreadFilterOneTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore // unstable
    public void testSendingNettyPaging() throws Exception
    {
       testSending(true, true);

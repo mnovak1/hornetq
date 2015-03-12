@@ -137,6 +137,7 @@ public class BridgeReconnectTest extends BridgeTestBase
     * @see https://bugzilla.redhat.com/show_bug.cgi?id=900764
     */
    @Test
+   @Ignore // unstable
    public void testFailoverDeploysBridge() throws Exception
    {
       NodeManager nodeManager = new InVMNodeManager(false);
