@@ -12,9 +12,11 @@
  */
 package org.hornetq.tests.integration.cluster.failover;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
- * @author <a href="mailto:andy.taylor@jboss.org">Andy Taylor</a>
- *         Created Oct 26, 2009
+ * @author <a href="mailto:andy.taylor@jboss.org">Andy Taylor</a> Created Oct 26, 2009
  */
 public class GroupingFailoverReplicationTest extends GroupingFailoverTestBase
 {
@@ -22,6 +24,14 @@ public class GroupingFailoverReplicationTest extends GroupingFailoverTestBase
    protected boolean isSharedStore()
    {
       return false;
+   }
+
+   @Override
+   @Test
+   @Ignore
+   public void testGroupingLocalHandlerFailsMultipleGroups() throws Exception
+   {
+      // unstable
    }
 
 }

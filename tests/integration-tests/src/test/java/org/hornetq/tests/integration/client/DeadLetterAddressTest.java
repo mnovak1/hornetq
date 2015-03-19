@@ -11,16 +11,6 @@
  * permissions and limitations under the License.
  */
 package org.hornetq.tests.integration.client;
-import org.junit.Before;
-
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.Assert;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.Message;
@@ -43,6 +33,15 @@ import org.hornetq.tests.integration.IntegrationTestLogger;
 import org.hornetq.tests.util.RandomUtil;
 import org.hornetq.tests.util.ServiceTestBase;
 import org.hornetq.tests.util.UnitTestCase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:andy.taylor@jboss.org">Andy Taylor</a>
@@ -100,8 +99,8 @@ public class DeadLetterAddressTest extends ServiceTestBase
       addressSettings.setMaxDeliveryAttempts(1);
       addressSettings.setDeadLetterAddress(dla);
       server.getAddressSettingsRepository().addMatch(qName.toString(), addressSettings);
-      //SimpleString dlq = new SimpleString("DLQ1");
-      //clientSession.createQueue(dla, dlq, null, false);
+      // SimpleString dlq = new SimpleString("DLQ1");
+      // clientSession.createQueue(dla, dlq, null, false);
       clientSession.createQueue(qName, qName, null, false);
       ClientProducer producer = clientSession.createProducer(qName);
       producer.send(createTextMessage(clientSession, "heyho!"));
@@ -159,6 +158,7 @@ public class DeadLetterAddressTest extends ServiceTestBase
    }
 
    @Test
+   @Ignore // unstable
    public void testReceiveWithListeners() throws Exception
    {
       SimpleString dla = new SimpleString("DLA");
@@ -185,7 +185,7 @@ public class DeadLetterAddressTest extends ServiceTestBase
       Assert.assertEquals(m.getBodyBuffer().readString(), "heyho!");
    }
 
-   class  TestHandler implements MessageHandler
+   class TestHandler implements MessageHandler
    {
       private final CountDownLatch latch;
       int count = 0;
@@ -208,7 +208,8 @@ public class DeadLetterAddressTest extends ServiceTestBase
          }
          catch (HornetQException e)
          {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                                 // Templates.
          }
          throw new RuntimeException();
       }
@@ -327,7 +328,8 @@ public class DeadLetterAddressTest extends ServiceTestBase
       long timeout = System.currentTimeMillis() + 5000;
 
       // DLA transfer is asynchronous fired on the rollback
-      while (System.currentTimeMillis() < timeout && ((Queue)server.getPostOffice().getBinding(qName).getBindable()).getMessageCount() != 0)
+      while (System.currentTimeMillis() < timeout &&
+               ((Queue)server.getPostOffice().getBinding(qName).getBindable()).getMessageCount() != 0)
       {
          Thread.sleep(1);
       }
